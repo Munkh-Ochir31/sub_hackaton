@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght,slnt@8..144,700,-10&display=swap"
+        rel="stylesheet">
+    <title>Ивээн тэтгэгчид</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .sponsors-section {
+            width: 100%;
+            overflow: hidden;
+            background: #21c7f4;
+            padding: 48px 0 56px;
+        }
+
+        .container {
+            width: min(100%, 1440px);
+            margin: 0 auto;
+            padding-inline: clamp(12px, 2.5vw, 28px);
+        }
+
+        .title {
+            font-family: 'Roboto Flex', sans-serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: clamp(42px, 6.6vw, 96px);
+            line-height: 1.1;
+            text-transform: uppercase;
+            text-align: center;
+            color: #fff;
+            margin: 0 0 clamp(18px, 2.5vw, 34px) 0;
+        }
+
+        /* =========================
+           ALHAN HEE
+        ========================= */
+        .pattern-row {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: visible;
+            height: clamp(34px, 4.5vw, 64px);
+            opacity: 0.7;
+            margin: 0 0 clamp(18px, 2.5vw, 34px) 0;
+        }
+
+        .pattern-track {
+            display: flex;
+            width: max-content;
+            position: relative;
+            z-index: 1;
+        }
+        .pattern-segment {
+            flex: 0 0 auto;
+            height: clamp(34px, 4.5vw, 64px);
+            width: 100vw;
+        }
+
+        .pattern-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            overflow: visible;
+        }
+
+        .pattern-svg .deer-stroke {
+            fill: none;
+            stroke: white;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            opacity: 0.22;
+        }
+
+        .pattern-svg .deer-highlight {
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.95;
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+        }
+
+        .pattern-svg .guide-dot {
+            fill: #ffffff;
+            opacity: 0;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 9px rgba(255, 255, 255, 0.7));
+            pointer-events: none;
+        }
+
+        /* =========================
+           LOGO MARQUEE
+        ========================= */
+        .logo-marquee {
+            --card-w: clamp(220px, 18vw, 280px);
+            --slot-gap: clamp(14px, 1.4vw, 24px);
+            --marquee-duration: 7s;
+            width: 100%;
+            overflow: visible;
+            position: relative;
+            margin: 0 0 clamp(18px, 2.5vw, 34px) 0;
+            padding: clamp(8px, 1.1vw, 12px) 0 clamp(10px, 1.3vw, 14px);
+        }
+
+        .logo-track {
+            display: flex;
+            align-items: center;
+            gap: var(--slot-gap);
+            width: max-content;
+            animation: marqueeMove var(--marquee-duration) linear infinite;
+            will-change: transform;
+            padding: 0 16px;
+        }
+
+        .hover-layer {
+            position: absolute;
+            inset: 10px 0 14px;
+            z-index: 4;
+        }
+
+        .hover-track {
+            display: flex;
+            align-items: center;
+            gap: var(--slot-gap);
+            width: max-content;
+            animation: marqueeMove var(--marquee-duration) linear infinite;
+            will-change: transform;
+            padding: 0 16px;
+        }
+
+        .hover-slot {
+            position: relative;
+            flex: 0 0 auto;
+            width: var(--card-w);
+            aspect-ratio: 630 / 401;
+        }
+
+        .logo-marquee:hover .logo-track {
+            animation-play-state: paused;
+        }
+
+        .logo-marquee:hover .hover-track {
+            animation-play-state: paused;
+        }
+
+        .logo-item {
+            --card-bg: #FBAE18;
+
+            position: relative;
+            flex: 0 0 auto;
+            width: var(--card-w);
+            aspect-ratio: 630 / 401;
+            border-radius: clamp(12px, 1.2vw, 24px);
+            cursor: pointer;
+        }
+
+
+        /* Энгийн харагдах PNG logo layer */
+        .logo-face {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .35s ease, transform .35s ease;
+            z-index: 2;
+        }
+
+        .logo-face img {
+            display: block;
+            max-width: 100%;
+            max-height: 40%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+
+
+        /* Hover card */
+        .hover-card {
+            position: absolute;
+            inset: 0;
+            border-radius: clamp(12px, 1.2vw, 24px);
+            overflow: hidden;
+            background: var(--card-bg, #FBAE18);
+            opacity: 0;
+            transform: translateY(18px) scale(.94);
+            transition: opacity .35s ease, transform .35s ease;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+            z-index: 3;
+            pointer-events: none;
+            --ger-x: right 0%;
+            background-image: url('ger.svg');
+            background-repeat: no-repeat;
+            background-position: var(--ger-x) bottom 0%;
+            background-size: 75% auto;
+        }
+
+        .hover-card:has(.side-label.side-right) {
+            --ger-x: left 0%;
+        }
+
+        .logo-marquee:hover .logo-face {
+            opacity: 0;
+            transform: scale(.88);
+        }
+
+        .logo-marquee:hover .hover-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+
+        .hover-card .side-label {
+            position: absolute;
+            left: clamp(8px, 1vw, 14px);
+            top: clamp(8px, 1vw, 14px);
+            bottom: clamp(8px, 1vw, 14px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-family: 'Roboto Flex', sans-serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: clamp(32px, 2.1vw, 30px);
+            line-height: 1;
+            text-transform: uppercase;
+            text-align: center;
+            color: #fff;
+            opacity: 0.30;
+            padding: 0;
+            background: none;
+            white-space: nowrap;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            z-index: 2;
+        }
+
+        .hover-card .side-label.side-right {
+            left: auto;
+            right: clamp(8px, 1vw, 14px);
+            writing-mode: vertical-lr;
+            transform: none;
+        }
+
+        .hover-card .card-title {
+            position: absolute;
+            width: 80%;
+            left: 50%;
+            top: 9%;
+            transform: translateX(-50%);
+            font-family: 'Roboto Flex', sans-serif;
+            font-weight: 900;
+            font-size: clamp(16px, 1.1vw, 48px);
+            line-height: 1.15;
+            text-align: center;
+            text-transform: uppercase;
+            color: #fff;
+            padding: 0.32em 0.55em;
+        }
+
+        .hover-card .card-logo {
+            position: absolute;
+            width: 73.33%;
+            height: 33.91%;
+            left: 50%;
+            top: 56.1%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hover-card .card-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .hover-card .socials {
+            position: absolute;
+            right: 5%;
+            bottom: 7%;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 0.8vw, 12px);
+            z-index: 6;
+        }
+
+        .hover-card .socials a {
+            width: clamp(16px, 2vw, 26px);
+            height: clamp(16px, 2vw, 26px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            .logo-track,
+            .hover-track {
+                animation-play-state: paused;
+            }
+
+            .logo-face {
+                opacity: 0;
+                transform: scale(.88);
+            }
+
+            .hover-card {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                pointer-events: auto;
+            }
+        }
+
+        .hover-card .socials svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .hover-card .socials img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* =========================
+           ANIMATION
+        ========================= */
+        @keyframes marqueeMove {
+            from {
+                transform: translateX(-50%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+        @media (max-width: 1200px) {
+            .sponsors-section {
+                padding: 40px 0 46px;
+            }
+
+            .logo-marquee {
+                --card-w: clamp(190px, 22vw, 235px);
+                --slot-gap: clamp(12px, 1.6vw, 18px);
+                --marquee-duration: 14s;
+            }
+
+            .hover-card .card-title {
+                width: 84%;
+                font-size: clamp(14px, 1.4vw, 24px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sponsors-section {
+                padding: 30px 0 36px;
+            }
+
+            .title {
+                margin-bottom: 22px;
+            }
+
+            .logo-marquee {
+                --card-w: 220px;
+                --slot-gap: 16px;
+                --marquee-duration: 16s;
+            }
+
+            .hover-layer {
+                inset: 8px 0 12px;
+            }
+
+            .pattern-row {
+                height: clamp(18px, 5vw, 30px);
+                margin: 0 0 18px 0;
+            }
+
+            .hover-card .side-label {
+                font-size: clamp(22px, 6vw, 28px);
+            }
+
+            .hover-card .card-title {
+                top: 10%;
+                width: 86%;
+                font-size: clamp(12px, 2.3vw, 18px);
+            }
+
+            .hover-card .socials a {
+                width: clamp(14px, 3vw, 20px);
+                height: clamp(14px, 3vw, 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-inline: 10px;
+            }
+
+            .logo-marquee {
+                --card-w: 180px;
+                --slot-gap: 12px;
+                --marquee-duration: 18s;
+            }
+
+            .hover-layer {
+                inset: 6px 0 10px;
+            }
+
+            .hover-card .card-title {
+                top: 11%;
+                width: 88%;
+                font-size: 10px;
+                line-height: 1.2;
+            }
+
+            .hover-card .side-label {
+                font-size: 20px;
+            }
+
+            .hover-card .socials {
+                right: 6%;
+                bottom: 8%;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .title {
+                font-size: clamp(30px, 11vw, 40px);
+            }
+
+            .logo-marquee {
+                --card-w: 162px;
+                --slot-gap: 10px;
+                --marquee-duration: 20s;
+            }
+
+            .hover-card .side-label {
+                font-size: 18px;
+            }
+
+            .hover-card .card-title {
+                font-size: 9px;
+            }
+        }
+
+        /* =========================
+           FULL RESPONSIVE LAYOUT
+        ========================= */
+        @media (max-width: 1024px) {
+            .sponsors-section {
+                padding: clamp(22px, 4vw, 34px) 0 clamp(28px, 5vw, 40px);
+            }
+
+            .container {
+                padding-inline: clamp(10px, 3vw, 18px);
+            }
+
+            .pattern-row {
+                height: clamp(22px, 4vw, 38px);
+                margin: 0 0 16px 0;
+            }
+
+            .pattern-segment {
+                width: 100vw;
+            }
+
+            .logo-marquee {
+                --card-w: auto;
+                --slot-gap: 12px;
+                --marquee-duration: 0s;
+                margin: 0 0 18px 0;
+            }
+
+            .logo-track {
+                display: none;
+            }
+
+            .hover-layer {
+                position: relative;
+                inset: auto;
+                z-index: 1;
+            }
+
+            .hover-track {
+                width: 100%;
+                animation: none;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                padding: 0;
+                transform: none !important;
+            }
+
+            .hover-track .hover-slot:nth-child(n+6) {
+                display: none;
+            }
+
+            .hover-slot {
+                width: 100%;
+            }
+
+            .hover-card {
+                position: relative;
+                opacity: 1;
+                transform: none;
+                pointer-events: auto;
+                min-height: 180px;
+                border-radius: 14px;
+            }
+
+            .hover-card .card-title {
+                top: 12%;
+                font-size: clamp(12px, 1.8vw, 18px);
+            }
+
+            .hover-card .side-label {
+                font-size: clamp(20px, 3.2vw, 26px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .title {
+                font-size: clamp(28px, 10vw, 42px);
+                margin-bottom: 14px;
+            }
+
+            .hover-track {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .hover-card {
+                min-height: 170px;
+            }
+
+            .hover-card .card-title {
+                top: 11%;
+                width: 86%;
+                font-size: clamp(11px, 3.4vw, 14px);
+            }
+
+            .hover-card .side-label {
+                font-size: clamp(18px, 6vw, 24px);
+                opacity: 0.24;
+            }
+
+            .hover-card .socials a {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .hover-card .socials a {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="sponsors-section">
+        <div class="container">
+            <h1 class="title">Ивээн тэтгэгчид</h1>
+
+            <!-- TOP PATTERN -->
+            <div class="pattern-row pattern-top">
+                <div class="pattern-track">
+                    <div class="pattern-segment" aria-hidden="true">
+                        <svg class="pattern-svg" viewBox="0 0 1440 64" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="deer-stroke"
+                                d="M1439.57 0.420898H1403.68H1391.71V13.0525V25.6841V38.3156H1403.68H1427.61V50.9472H1391.71H1343.87V38.3156H1367.79H1379.75V25.6841V13.0525V0.420898H1367.79H1319.94H1319.54H1283.65H1271.69V13.0525V25.6841V38.3156H1283.65H1307.57V50.9472H1271.69H1223.83V38.3156H1247.76H1259.73V25.6841V13.0525V0.420898H1247.76H1199.9H1199.51H1163.62H1151.66V13.0525V25.6841V38.3156H1163.62H1187.55V50.9472H1151.66H1103.8V38.3156H1127.73H1139.69V25.6841V13.0525V0.420898H1127.73H1079.88H1079.48H1043.59H1031.62V13.0525V25.6841V38.3156H1043.59H1067.51V50.9472H1031.62H983.776V38.3156H1007.69H1019.66V25.6841V13.0525V0.420898H1007.69H959.848H959.443H923.555H911.596V13.0525V25.6841V38.3156H923.555H947.483V50.9472H911.596H863.74V38.3156H887.668H899.627V25.6841V13.0525V0.420898H887.668H839.812H803.528H791.56V13.0525V25.6841V38.3156H803.528H827.456V50.9472H791.56H743.713V38.3156H767.64H779.6V25.6841V13.0525V0.420898H767.64H719.785H683.897H671.929V13.0525V25.6841V38.3156H683.897H707.825V50.9472H671.929H624.082V38.3156H648.009H659.969V25.6841V13.0525V0.420898H648.009H600.154H599.757H563.861H551.902V13.0525V25.6841V38.3156H563.861H587.789V50.9472H551.902H504.046V38.3156H527.974H539.942V25.6841V13.0525V0.420898H527.974H480.126H479.721H443.834H431.874V13.0525V25.6841V38.3156H443.834H467.762V50.9472H431.874H384.018V38.3156H407.946H419.906V25.6841V13.0525V0.420898H407.946H360.09H359.694H323.807H311.838V13.0525V25.6841V38.3156H323.807H347.726V50.9472H311.838H263.991V38.3156H287.91H299.879V25.6841V13.0525V0.420898H287.91H240.063H239.658H203.771H191.811V13.0525V25.6841V38.3156H203.771H227.699V50.9472H191.811H143.955V38.3156H167.883H179.843V25.6841V13.0525V0.420898H167.883H120.027H83.7434H71.7751V13.0525V25.6841V38.3156H83.7434H107.671V50.9472H71.7751H23.9279V38.3156H47.8558H59.8155V25.6841V13.0525V0.420898H47.8558H0"
+                                stroke="white" stroke-width="2" stroke-miterlimit="10" />
+                            <path class="deer-stroke second"
+                                d="M0 13.0527H47.8558V25.6843H11.9596V38.3159V50.9475V63.5791H23.9279H71.7751H107.671H119.631V60.2948V50.9475V38.3159V25.6843H83.7434V13.0527H120.027H167.883V25.6843H131.996V38.3159V50.9475V63.5791H143.955H191.811H227.699H239.658V60.2948V50.9475V38.3159V25.6843H203.771V13.0527H239.658H240.063H287.91V25.6843H252.023V38.3159V50.9475V63.5791H263.991H311.838H347.726H359.694V60.2948V50.9475V38.3159V25.6843H323.807V13.0527H359.694H360.09H407.946V25.6843H372.059V38.3159V50.9475V63.5791H384.018H431.874H467.762H479.721V60.2948V50.9475V38.3159V25.6843H443.834V13.0527H479.721H480.126H527.974V25.6843H492.086V38.3159V50.9475V63.5791H504.046H551.902H587.789H599.757V60.2948V50.9475V38.3159V25.6843H563.861V13.0527H599.757H600.154H648.009V25.6843H612.113V38.3159V50.9475V63.5791H624.082H671.929H707.825H719.785V60.2948V50.9475V38.3159V25.6843H683.897V13.0527H719.785H767.64V25.6843H731.744V38.3159V50.9475V63.5791H743.713H791.56H827.456H839.416V60.2948V50.9475V38.3159V25.6843H803.528V13.0527H839.812H887.668V25.6843H851.78V38.3159V50.9475V63.5791H863.74H911.596H947.483H959.443V60.2948V50.9475V38.3159V25.6843H923.555V13.0527H959.443H959.848H1007.69V25.6843H971.807V38.3159V50.9475V63.5791H983.776H1031.62H1067.51H1079.48V60.2948V50.9475V38.3159V25.6843H1043.59V13.0527H1079.48H1079.88H1127.73V25.6843H1091.84V38.3159V50.9475V63.5791H1103.8H1151.66H1187.55H1199.51V60.2948V50.9475V38.3159V25.6843H1163.62V13.0527H1199.51H1199.9H1247.76V25.6843H1211.87V38.3159V50.9475V63.5791H1223.83H1271.69H1307.57H1319.54V60.2948V50.9475V38.3159V25.6843H1283.65V13.0527H1319.54H1319.94H1367.79V25.6843H1331.9V38.3159V50.9475V63.5791H1343.87H1391.71H1427.61H1439.57V60.2948V50.9475V38.3159V25.6843H1403.68V13.0527H1439.57"
+                                stroke="white" stroke-width="2" stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOGOS WITH HOVER CARDS -->
+            <div class="logo-marquee">
+                <div class="logo-track">
+                    <div class="logo-item small">
+                        <div class="logo-face"><img src="MezornLogo.png" alt="Mezorn"></div>
+                    </div>
+
+                    <div class="logo-item large">
+                        <div class="logo-face"><img src="ZangiaLogo.png" alt="Zangia"></div>
+                    </div>
+
+                    <div class="logo-item small">
+                        <div class="logo-face"><img src="NashaTechLogo.png" alt="Nasha Tech"></div>
+                    </div>
+
+                    <div class="logo-item large">
+                        <div class="logo-face"><img src="ItParkLogo.png" alt="IT Park"></div>
+                    </div>
+
+                    <!-- second set -->
+                    <div class="logo-item small">
+                        <div class="logo-face"><img src="MezornLogo.png" alt="Mezorn"></div>
+                    </div>
+
+                    <div class="logo-item large">
+                        <div class="logo-face"><img src="ZangiaLogo.png" alt="Zangia"></div>
+                    </div>
+
+                    <div class="logo-item small">
+                        <div class="logo-face"><img src="NashaTechLogo.png" alt="Nasha Tech"></div>
+                    </div>
+
+                    <div class="logo-item large">
+                        <div class="logo-face"><img src="ItParkLogo.png" alt="IT Park"></div>
+                    </div>
+                </div>
+
+                <div class="hover-layer">
+                    <div class="hover-track">
+                        <div class="hover-slot" style="--card-bg:#FBAE18;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label">MEZORN</div>
+                                <div class="card-title">ЕРӨНХИЙ ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="MezornLogo.png" alt="Mezorn"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#EF4323;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">ZANGIA</div>
+                                <div class="card-title">ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="ZangiaLogo.png" alt="Zangia"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#EF4323;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">NASHA</div>
+                                <div class="card-title">ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="NashaTechLogo.png" alt="Nasha Tech"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#5B3F9B;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label">ITPARK</div>
+                                <div class="card-title">ХАМТРАН АЖИЛЛАГЧ</div>
+                                <div class="card-logo"><img src="ItParkLogo.png" alt="IT Park"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#057242;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">SYSCO</div>
+                                <div class="card-title">ЗОХИОН БАЙГУУЛАГЧ</div>
+                            </div>
+                        </div>
+
+                        <!-- second set -->
+                        <div class="hover-slot" style="--card-bg:#FBAE18;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label">MEZORN</div>
+                                <div class="card-title">ЕРӨНХИЙ ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="MezornLogo.png" alt="Mezorn"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#EF4323;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">ZANGIA</div>
+                                <div class="card-title">ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="ZangiaLogo.png" alt="Zangia"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#EF4323;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">NASHA</div>
+                                <div class="card-title">ИВЭЭН ТЭТГЭГЧ</div>
+                                <div class="card-logo"><img src="NashaTechLogo.png" alt="Nasha Tech"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#5B3F9B;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label">ITPARK</div>
+                                <div class="card-title">ХАМТРАН АЖИЛЛАГЧ</div>
+                                <div class="card-logo"><img src="ItParkLogo.png" alt="IT Park"></div>
+                            </div>
+                        </div>
+
+                        <div class="hover-slot" style="--card-bg:#057242;">
+                            <div class="hover-card">
+                                <div class="bg-shape"></div>
+                                <div class="side-label side-right">SYSCO</div>
+                                <div class="card-title">ЗОХИОН БАЙГУУЛАГЧ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM PATTERN -->
+            <div class="pattern-row pattern-bottom bottom">
+                <div class="pattern-track">
+                    <div class="pattern-segment" aria-hidden="true">
+                        <svg class="pattern-svg" viewBox="0 0 1440 64" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="deer-stroke"
+                                d="M1439.57 0.420898H1403.68H1391.71V13.0525V25.6841V38.3156H1403.68H1427.61V50.9472H1391.71H1343.87V38.3156H1367.79H1379.75V25.6841V13.0525V0.420898H1367.79H1319.94H1319.54H1283.65H1271.69V13.0525V25.6841V38.3156H1283.65H1307.57V50.9472H1271.69H1223.83V38.3156H1247.76H1259.73V25.6841V13.0525V0.420898H1247.76H1199.9H1199.51H1163.62H1151.66V13.0525V25.6841V38.3156H1163.62H1187.55V50.9472H1151.66H1103.8V38.3156H1127.73H1139.69V25.6841V13.0525V0.420898H1127.73H1079.88H1079.48H1043.59H1031.62V13.0525V25.6841V38.3156H1043.59H1067.51V50.9472H1031.62H983.776V38.3156H1007.69H1019.66V25.6841V13.0525V0.420898H1007.69H959.848H959.443H923.555H911.596V13.0525V25.6841V38.3156H923.555H947.483V50.9472H911.596H863.74V38.3156H887.668H899.627V25.6841V13.0525V0.420898H887.668H839.812H803.528H791.56V13.0525V25.6841V38.3156H803.528H827.456V50.9472H791.56H743.713V38.3156H767.64H779.6V25.6841V13.0525V0.420898H767.64H719.785H683.897H671.929V13.0525V25.6841V38.3156H683.897H707.825V50.9472H671.929H624.082V38.3156H648.009H659.969V25.6841V13.0525V0.420898H648.009H600.154H599.757H563.861H551.902V13.0525V25.6841V38.3156H563.861H587.789V50.9472H551.902H504.046V38.3156H527.974H539.942V25.6841V13.0525V0.420898H527.974H480.126H479.721H443.834H431.874V13.0525V25.6841V38.3156H443.834H467.762V50.9472H431.874H384.018V38.3156H407.946H419.906V25.6841V13.0525V0.420898H407.946H360.09H359.694H323.807H311.838V13.0525V25.6841V38.3156H323.807H347.726V50.9472H311.838H263.991V38.3156H287.91H299.879V25.6841V13.0525V0.420898H287.91H240.063H239.658H203.771H191.811V13.0525V25.6841V38.3156H203.771H227.699V50.9472H191.811H143.955V38.3156H167.883H179.843V25.6841V13.0525V0.420898H167.883H120.027H83.7434H71.7751V13.0525V25.6841V38.3156H83.7434H107.671V50.9472H71.7751H23.9279V38.3156H47.8558H59.8155V25.6841V13.0525V0.420898H47.8558H0"
+                                stroke="white" stroke-width="2" stroke-miterlimit="10" />
+                            <path class="deer-stroke second"
+                                d="M0 13.0527H47.8558V25.6843H11.9596V38.3159V50.9475V63.5791H23.9279H71.7751H107.671H119.631V60.2948V50.9475V38.3159V25.6843H83.7434V13.0527H120.027H167.883V25.6843H131.996V38.3159V50.9475V63.5791H143.955H191.811H227.699H239.658V60.2948V50.9475V38.3159V25.6843H203.771V13.0527H239.658H240.063H287.91V25.6843H252.023V38.3159V50.9475V63.5791H263.991H311.838H347.726H359.694V60.2948V50.9475V38.3159V25.6843H323.807V13.0527H359.694H360.09H407.946V25.6843H372.059V38.3159V50.9475V63.5791H384.018H431.874H467.762H479.721V60.2948V50.9475V38.3159V25.6843H443.834V13.0527H479.721H480.126H527.974V25.6843H492.086V38.3159V50.9475V63.5791H504.046H551.902H587.789H599.757V60.2948V50.9475V38.3159V25.6843H563.861V13.0527H599.757H600.154H648.009V25.6843H612.113V38.3159V50.9475V63.5791H624.082H671.929H707.825H719.785V60.2948V50.9475V38.3159V25.6843H683.897V13.0527H719.785H767.64V25.6843H731.744V38.3159V50.9475V63.5791H743.713H791.56H827.456H839.416V60.2948V50.9475V38.3159V25.6843H803.528V13.0527H839.812H887.668V25.6843H851.78V38.3159V50.9475V63.5791H863.74H911.596H947.483H959.443V60.2948V50.9475V38.3159V25.6843H923.555V13.0527H959.443H959.848H1007.69V25.6843H971.807V38.3159V50.9475V63.5791H983.776H1031.62H1067.51H1079.48V60.2948V50.9475V38.3159V25.6843H1043.59V13.0527H1079.48H1079.88H1127.73V25.6843H1091.84V38.3159V50.9475V63.5791H1103.8H1151.66H1187.55H1199.51V60.2948V50.9475V38.3159V25.6843H1163.62V13.0527H1199.51H1199.9H1247.76V25.6843H1211.87V38.3159V50.9475V63.5791H1223.83H1271.69H1307.57H1319.54V60.2948V50.9475V38.3159V25.6843H1283.65V13.0527H1319.54H1319.94H1367.79V25.6843H1331.9V38.3159V50.9475V63.5791H1343.87H1391.71H1427.61H1439.57V60.2948V50.9475V38.3159V25.6843H1403.68V13.0527H1439.57"
+                                stroke="white" stroke-width="2" stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultSocialLinks = {
+                facebook: 'https://www.facebook.com/',
+                website: 'https://www.google.com/',
+                instagram: 'https://www.instagram.com/'
+            };
+
+            const sponsorSocialLinks = {
+                MEZORN: {
+                    facebook: 'https://www.facebook.com/mezorn',
+                    website: 'https://mezorn.com/',
+                    instagram: 'https://www.instagram.com/mezornteam/'
+                },
+                ZANGIA: {
+                    facebook: 'https://www.facebook.com/Zangia.mn',
+                    website: 'https://zangia.mn/',
+                    instagram: 'https://www.instagram.com/zangia.mn/'
+                },
+                NASHA: {
+                    facebook: 'https://www.facebook.com/nashatech',
+                    website: 'https://nashatech.com/',
+                    instagram: 'https://www.instagram.com/nashatech_llc/'
+                },
+                ITPARK: {
+                    facebook: 'https://www.facebook.com/ITPARK.mn',
+                    website: 'https://itpark.mn/',
+                    instagram: 'https://www.instagram.com/itparkmn/'
+                },
+                SYSCO: {
+                    facebook: 'https://www.facebook.com/SysAndCoTech',
+                    website: 'https://syscotech.club/',
+                    instagram: 'https://www.instagram.com/syscotechclub_/'
+                }
+            };
+
+            const hoverCards = document.querySelectorAll('.logo-marquee .hover-card');
+            hoverCards.forEach((card) => {
+                if (card.querySelector('.socials')) {
+                    return;
+                }
+
+                const labelNode = card.querySelector('.side-label');
+                const sponsorKey = labelNode ? labelNode.textContent.trim().toUpperCase() : '';
+                const links = sponsorSocialLinks[sponsorKey] || defaultSocialLinks;
+
+                const socials = document.createElement('div');
+                socials.className = 'socials';
+                socials.innerHTML = `
+                    <a href="${links.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <img src="facebook.svg" alt="Facebook">
+                    </a>
+                    <a href="${links.website}" target="_blank" rel="noopener noreferrer" aria-label="Website">
+                        <img src="globe.svg" alt="Website">
+                    </a>
+                    <a href="${links.instagram}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <img src="instagram.svg" alt="Instagram">
+                    </a>
+                `;
+
+                card.appendChild(socials);
+            });
+
+            const dotLoopDurationMs = 10000;
+            const svgNs = 'http://www.w3.org/2000/svg';
+            const rows = document.querySelectorAll('.pattern-row');
+
+            rows.forEach((row) => {
+                const strokes = row.querySelectorAll('.deer-stroke');
+                const guides = [];
+
+                strokes.forEach((path) => {
+                    const length = path.getTotalLength();
+                    const startPoint = path.getPointAtLength(0);
+                    const endPoint = path.getPointAtLength(length);
+                    const isNaturalLeftToRight = endPoint.x >= startPoint.x;
+                    const isOuterStroke = !path.classList.contains('second');
+
+                    const highlight = path.cloneNode(false);
+                    highlight.removeAttribute('stroke');
+                    highlight.removeAttribute('stroke-width');
+                    highlight.setAttribute('class', 'deer-highlight');
+                    path.ownerSVGElement.appendChild(highlight);
+
+                    const startOffset = isNaturalLeftToRight ? length : -length;
+                    highlight.style.strokeDasharray = String(length);
+                    highlight.style.strokeDashoffset = String(startOffset);
+
+                    const dot = document.createElementNS(svgNs, 'circle');
+                    dot.setAttribute('class', 'guide-dot');
+                    dot.setAttribute('r', '4.2');
+                    path.ownerSVGElement.appendChild(dot);
+
+                    guides.push({
+                        path,
+                        dot,
+                        highlight,
+                        length,
+                        isNaturalLeftToRight,
+                        isOuterStroke,
+                        startOffset,
+                    });
+                });
+
+                requestAnimationFrame(() => {
+                    const startAt = performance.now();
+
+                    const animateGuides = (now) => {
+                        const elapsed = now - startAt;
+                        const t = Math.min(elapsed / dotLoopDurationMs, 1);
+
+                        guides.forEach(({ path, dot, highlight, length, isNaturalLeftToRight, isOuterStroke, startOffset }) => {
+                            const baseProgress = isNaturalLeftToRight ? t : 1 - t;
+                            const pathProgress = isOuterStroke ? 1 - baseProgress : baseProgress;
+                            const point = path.getPointAtLength(pathProgress * length);
+                            const revealStartOffset = isOuterStroke ? -startOffset : startOffset;
+                            const currentOffset = revealStartOffset * (1 - t);
+
+                            dot.setAttribute('cx', point.x.toFixed(2));
+                            dot.setAttribute('cy', point.y.toFixed(2));
+                            dot.style.opacity = t > 0 ? '1' : '0';
+                            highlight.style.strokeDashoffset = currentOffset.toFixed(2);
+                        });
+                        if (t < 1) {
+                            requestAnimationFrame(animateGuides);
+                        }
+                    };
+
+                    requestAnimationFrame(animateGuides);
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
